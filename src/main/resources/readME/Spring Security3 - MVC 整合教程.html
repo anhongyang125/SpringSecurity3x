@@ -1,0 +1,1324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Spring Security3 - MVC 整合教程 (初识Spring Security3) - 郁闷的战士 - ITeye技术网站</title>
+    <meta name="description" content="下面我们将实现关于Spring Security3的一系列教程. 最终的目标是整合Spring Security + Spring3MVC 完成类似于SpringSide3中mini-web的功能. Spring Security是什么? 引用Spring Security，这是一种基于Spring AOP和Servlet过滤器的安全框架。它提供全面的安全性解决方案，同时在Web请求级和方法调用级处 ..." />
+    <meta name="keywords" content="Spring, MVC, Security, XML, JSP Spring Security3 - MVC 整合教程 (初识Spring Security3)" />
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/open_search.xml" title="ITeye" />
+    <link href="/rss" rel="alternate" title="郁闷的战士" type="application/rss+xml" />
+    <link href="http://www.iteye.com/stylesheets/blog.css?1470389515" media="screen" rel="stylesheet" type="text/css" />
+<link href="http://www.iteye.com/stylesheets/themes/blog/white.css?1448702469" media="screen" rel="stylesheet" type="text/css" />
+    <script src="http://www.iteye.com/javascripts/application.js?1448702469" type="text/javascript"></script>    
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-535605-1']);
+  _gaq.push(['_setDomainName', 'iteye.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+      <link href="http://www.iteye.com/javascripts/syntaxhighlighter/SyntaxHighlighter.css?1448702469" media="screen" rel="stylesheet" type="text/css" />
+  <script src="http://www.iteye.com/javascripts/syntaxhighlighter/shCoreCommon.js?1448702469" type="text/javascript"></script>
+<script src="http://www.iteye.com/javascripts/hotkey.js?1448702469" type="text/javascript"></script>
+  <script src="http://www.iteye.com/javascripts/code_favorites.js?1448702469" type="text/javascript"></script>
+<script src="http://www.iteye.com/javascripts/weiboshare.js?1448702469" type="text/javascript"></script>
+  <link href="http://www.iteye.com/javascripts/editor/css/ui.css?1448702469" media="screen" rel="stylesheet" type="text/css" />
+  <script src="http://www.iteye.com/javascripts/editor/compress.js?1448702469" type="text/javascript"></script>
+    
+  </head>
+  <body>
+    <div id="header">
+	      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">知识库</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+	      <div id="user_nav">
+  
+        <a href="http://anhongyang125.iteye.com" title="查看我的博客首页" class="welcome">欢迎anhongyang125</a>
+    <a id="notifications_count" href="http://my.iteye.com/notifications">0</a>
+    
+      <a href="http://my.iteye.com/messages" title="你有新的站内短信"><img alt="Newpm" src="http://www.iteye.com/images/newpm.gif?1448702469" />收件箱(2)</a>
+    
+    <a href="http://my.iteye.com" title="我的应用首页">我的应用</a>
+    <div class="quick_menu" style="display:none;">
+      <a href="http://my.iteye.com/feed" title="我关注的好友动态消息">我的关注</a>
+      <a href="http://my.iteye.com/mygroup" title="我加入的群组最新话题">我的群组</a>
+      <a href="http://my.iteye.com/myresume" title="我的个人简历">我的简历</a>
+      <a href="http://my.iteye.com/admin/album" title="我的个人简历">我的相册</a>
+      <a href="http://my.iteye.com/admin/link" title="我收藏的网络资源链接">我的收藏</a>
+      <a href="http://my.iteye.com/admin/code" title="我收藏的代码">我的代码</a>
+      <a href="http://my.iteye.com/admin/weibo" title="用微博发表简短的话题">我的微博</a>
+    </div>
+    <a href="http://anhongyang125.iteye.com/admin" title="管理我的博客">我的博客</a>
+    <a href="http://my.iteye.com/profile" title="修改我的个人设置">设置</a>
+    <a href="/logout" class="nobg" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'put'); f.appendChild(m);var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', 'wp3+CEbb9Jqcwmuyidbd2OHBbwGvffdsKAcpcKtBmYw='); f.appendChild(s);f.submit();return false;">退出</a>
+  </div>
+
+	    
+    </div>
+
+    <div id="page">
+        <div id="branding" class="clearfix" style="overflow: hidden;background: none;padding:0 0 2px;">
+        	<ins data-revive-zoneid="184" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+        </div>
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="/">郁闷的战士</a></h1>
+        </div>
+        <div id='fd'></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class='blog_navbar_for'><a href="http://liukai.iteye.com"><strong>博客</strong></a></li>
+            <li ><a href="/weibo">微博</a></li>
+            <li ><a href="/album">相册</a></li>
+            <li ><a href="/link">收藏</a></li>
+            <li ><a href="/blog/guest_book">留言</a></li>
+            <li ><a href="/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text" value="" />
+              <input class="submit_search" type="submit" value="" />
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style='display:none'>
+  <a href="http://liukai.iteye.com" class="p-author" target="_blank">liukai</a>
+</div>
+
+
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="/blog/982088">Spring Security3 - MVC 整合教程 (初识Spring Security3)</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class='blog_categories'><strong>博客分类：</strong> <li><a href="/category/149025">spring3MVC教程</a></li> </ul>
+        <div class='news_tag'><a href="http://www.iteye.com/blogs/tag/Spring">Spring</a><a href="http://www.iteye.com/blogs/tag/MVC">MVC</a><a href="http://www.iteye.com/blogs/tag/Security">Security</a><a href="http://www.iteye.com/blogs/tag/XML">XML</a><a href="http://www.iteye.com/blogs/tag/JSP">JSP</a></div>
+    	  
+    	
+    	
+  		
+      </div>
+
+  <div id="blog_content" class="blog_content">
+    下面我们将实现关于Spring Security3的一系列教程.<br />最终的目标是整合Spring Security + Spring3MVC<br />完成类似于SpringSide3中mini-web的功能.<br /><br /><strong>Spring Security是什么?</strong><br /><br /><div class="quote_title">引用</div><div class="quote_div">Spring Security，这是一种基于Spring AOP和Servlet过滤器的安全框架。它提供全面的安全性解决方案，同时在Web请求级和方法调用级处理身份确认和授权。在Spring Framework基础上，Spring Security充分利用了依赖注入（DI，Dependency Injection）和面向切面技术。</div><br /><br />关于Spring Security学习的资料.<br />最重要,最齐全的中文资料当然是family168的中文文档<br /><a target="_blank" href="http://www.family168.com/oa/springsecurity/html/index.html">Spring Security2参考文档</a><br /><br /><a target="_blank" href="http://www.family168.com/tutorial/springsecurity3/html/springsecurity.html">Spring Security3 参考文档</a><br /><br />附件包含了一个很好的初入门的PDF教程.<br />最好是花30分钟先照着PDF上的教程一步一步的操作.<br />虽然没有实际的应用价值,但对初学者认识SpringSecurity3很有帮助.<br /><br />我们的项目目录结构最终是:<br /><br /><img src="http://dl.iteye.com/upload/attachment/451736/1bdbc126-14db-3a48-bfb3-6eedca9c1fc7.png" /><br /><br /><br />需要添加的jar包:<br /><br /><img src="http://dl.iteye.com/upload/attachment/451738/cea111b5-ef8f-3179-a157-8818b300fd29.png" /><br /><br /><br />我们先实现一个controller:<br /><br /><strong>MainController.java</strong><br /><br /><pre name="code" class="java">
+package org.liukai.tutorial.controller;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/main")
+public class MainController {
+	protected static Logger logger = Logger.getLogger("controller");
+
+	/**
+	 * 跳转到commonpage页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/common", method = RequestMethod.GET)
+	public String getCommonPage() {
+		logger.debug("Received request to show common page");
+		return "commonpage";
+	}
+
+	/**
+	 * 跳转到adminpage页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String getAadminPage() {
+		logger.debug("Received request to show admin page");
+		return "adminpage";
+
+	}
+
+}
+
+</pre> <br /><br />该controller有两个mapping映射:<br /><br /><div class="quote_title">引用</div><div class="quote_div">main/common<br />main/admin</div><br /><br />现在我们将同过Spring Security3框架实现成功登陆的人都能访问到main/common.<br />但只有拥有admin权限的用户才能访问main/admin.<br /><br /><br />我们先在web.xml中开启Spring3MVC和SpringSecurity3.<br /><br /><strong>web.xml</strong><br /><br /><pre name="code" class="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"&gt;
+	
+	&lt;!-- SpringSecurity必须的filter --&gt;
+	&lt;filter&gt;
+		&lt;filter-name&gt;springSecurityFilterChain&lt;/filter-name&gt;
+		&lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+	&lt;/filter&gt;
+
+	&lt;filter-mapping&gt;
+		&lt;filter-name&gt;springSecurityFilterChain&lt;/filter-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/filter-mapping&gt;
+
+	&lt;context-param&gt;
+		&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+		&lt;param-value&gt;
+		/WEB-INF/spring-security.xml
+		/WEB-INF/applicationContext.xml
+		&lt;/param-value&gt;
+	&lt;/context-param&gt;
+
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;spring&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+		&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+	&lt;/servlet&gt;
+
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;spring&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+
+	&lt;listener&gt;
+		&lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+	&lt;/listener&gt;
+
+&lt;/web-app&gt;
+
+</pre><br /><br />要启用SpringSecurity3,我们需要完成以下两步:<br />1.在web.xml中声明DelegatingFilterProxy.<br /><br /><pre name="code" class="xml">&lt;filter-mapping&gt;
+		&lt;filter-name&gt;springSecurityFilterChain&lt;/filter-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/filter-mapping&gt;</pre><br /><br />表示项目中所有路径的资源都要经过SpringSecurity.<br /><br />2.导入指定的SpringSecurity配置 :spring-security.xml<br /><br />关于spring-security.xml的配置.<br />我们把这个放到后面配置.以便更详细的讲解.<br /><br /><strong>注意一点.最好是将DelegatingFilterProxy写在DispatcherServlet之前.否则<br />SpringSecurity可能不会正常工作.</strong><br /><br /><br />在web.xml中我们定义servlet:spring.<br />按照惯例,我们必须声明一个spring-servle.xml<br /><strong>spring-servle.xml </strong><br /><br /><pre name="code" class="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"&gt;
+
+	&lt;!-- 定义一个视图解析器 --&gt;
+	&lt;bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" /&gt;
+
+&lt;/beans&gt;
+</pre><br /><br />这个XML配置声明一个视图解析器.在控制器中会根据JSP名映射到/ WEB-INF/jsp中相应的位置.<br /><br /><br />然后创建一个applicationContext.xml. <br /><br /><strong>applicationContext.xml. </strong><br /><pre name="code" class="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	   		http://www.springframework.org/schema/context
+	   		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/mvc 
+			http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"&gt;
+
+	&lt;!-- 激活spring的注解. --&gt;
+	&lt;context:annotation-config /&gt;
+
+	&lt;!-- 扫描注解组件并且自动的注入spring beans中. 
+	例如,他会扫描@Controller 和@Service下的文件.所以确保此base-package设置正确. --&gt;
+	&lt;context:component-scan base-package="org.liukai.tutorial" /&gt;
+
+	&lt;!-- 配置注解驱动的Spring MVC Controller 的编程模型.注:次标签只在 Servlet MVC工作! --&gt;
+	&lt;mvc:annotation-driven /&gt;
+
+&lt;/beans&gt;
+
+</pre><br /><br /><br /><br /><br />接着是创建JSP页面<br /><br /><strong>commonpage.jsp</strong><br /><br /><pre name="code" class="jsp">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;h1&gt;Common Page&lt;/h1&gt;
+	&lt;p&gt;每个人都能访问的页面.&lt;/p&gt;
+	&lt;a href="/spring3-security-integration/main/admin"&gt; Go AdminPage &lt;/a&gt;
+	&lt;br /&gt;
+	&lt;a href="/spring3-security-integration/auth/login"&gt;退出登录&lt;/a&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre><br /><br /><br /><strong>adminpage.jsp</strong><br /><pre name="code" class="jsp">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;h1&gt;Admin Page&lt;/h1&gt;
+	&lt;p&gt;管理员页面&lt;/p&gt;
+	&lt;a href="/spring3-security-integration/auth/login"&gt;退出登录&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre><br /><br />这两个JSP对应着<br /><br /><img src="http://dl.iteye.com/upload/attachment/451744/0d59b3d5-9ebe-37f6-b34d-e0f7ad666847.png" /><br /><br /><br /><img src="http://dl.iteye.com/upload/attachment/451746/7fc72a65-9c4e-3118-844d-7037bfbef3a0.png" /><br /><br /><br />当然还有登陆页面和拒绝访问页面<br /><br /><img src="http://dl.iteye.com/upload/attachment/451742/228714e0-1212-3d70-b723-667a34ad97ba.png" /><br /><br /><br /><img src="http://dl.iteye.com/upload/attachment/451748/268fc009-b29e-3f05-afd0-d817f4a1b650.png" /><br /><br /><strong>loginpage.jsp</strong><br /><br /><pre name="code" class="jsp">
+&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%&gt;
+&lt;%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%&gt;
+&lt;%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%&gt;
+
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+	&lt;h1&gt;Login&lt;/h1&gt;
+
+	&lt;div id="login-error"&gt;${error}&lt;/div&gt;
+
+	&lt;form action="../j_spring_security_check" method="post"&gt;
+
+		&lt;p&gt;
+			&lt;label for="j_username"&gt;Username&lt;/label&gt; &lt;input id="j_username"
+				name="j_username" type="text" /&gt;
+		&lt;/p&gt;
+
+		&lt;p&gt;
+			&lt;label for="j_password"&gt;Password&lt;/label&gt; &lt;input id="j_password"
+				name="j_password" type="password" /&gt;
+		&lt;/p&gt;
+
+		&lt;input type="submit" value="Login" /&gt;
+
+	&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre><br /><br /><br /><strong>deniedpage.jsp</strong><br /><pre name="code" class="jsp">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;h1&gt;你的权限不够!&lt;/h1&gt;
+	&lt;p&gt;只有拥有Admin权限才能访问!&lt;/p&gt;
+	&lt;a href="/spring3-security-integration/auth/login"&gt;退出登录&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre><br /><br /><br />还有一个controller用于映射上面两个JSP页面..<br /><strong><br />LoginLogoutController.java</strong><br /><br /><pre name="code" class="java">
+package org.liukai.tutorial.controller;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+@RequestMapping("auth")
+public class LoginLogoutController {
+
+	protected static Logger logger = Logger.getLogger("controller");
+
+	/**
+	 * 指向登录页面
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String getLoginPage(
+			@RequestParam(value = "error", required = false) boolean error,
+			ModelMap model) {
+
+		logger.debug("Received request to show login page");
+
+		if (error == true) {
+			// Assign an error message
+			model.put("error",
+					"You have entered an invalid username or password!");
+		} else {
+			model.put("error", "");
+		}
+		return "loginpage";
+
+	}
+
+	/**
+	 * 指定无访问额权限页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/denied", method = RequestMethod.GET)
+	public String getDeniedPage() {
+
+		logger.debug("Received request to show denied page");
+
+		return "deniedpage";
+
+	}
+}
+
+</pre><br /><br />该controller实现了两个映射<br /><div class="quote_title">引用</div><div class="quote_div">auth/login&nbsp;&nbsp;&nbsp;&nbsp; --显示Login页面<br />auth/denied&nbsp;&nbsp;&nbsp; --显示拒绝访问页面</div><br /> <br /><br />最后,让我们看看spring-security.xml的配置<br /><br /><strong>spring-security.xml</strong><br /><br /><pre name="code" class="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/security 
+			http://www.springframework.org/schema/security/spring-security-3.0.xsd"&gt;
+	
+	&lt;!--  Spring-Security 的配置 --&gt;
+	&lt;!-- 注意开启use-expressions.表示开启表达式.
+	see:http://www.family168.com/tutorial/springsecurity3/html/el-access.html
+	 --&gt;
+	&lt;security:http auto-config="true" use-expressions="true" access-denied-page="/auth/denied" &gt;
+		
+		&lt;security:intercept-url pattern="/auth/login" access="permitAll"/&gt;
+		&lt;security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/&gt;
+		&lt;security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/&gt;
+		
+		&lt;security:form-login
+				login-page="/auth/login" 
+				authentication-failure-url="/auth/login?error=true" 
+				default-target-url="/main/common"/&gt;
+			
+		&lt;security:logout 
+				invalidate-session="true" 
+				logout-success-url="/auth/login" 
+				logout-url="/auth/logout"/&gt;
+	
+	&lt;/security:http&gt;
+	
+	&lt;!-- 指定一个自定义的authentication-manager :customUserDetailsService --&gt;
+	&lt;security:authentication-manager&gt;
+	        &lt;security:authentication-provider user-service-ref="customUserDetailsService"&gt;
+	        		&lt;security:password-encoder ref="passwordEncoder"/&gt;
+	        &lt;/security:authentication-provider&gt;
+	&lt;/security:authentication-manager&gt;
+	
+	&lt;!-- 对密码进行MD5编码 --&gt;
+	&lt;bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder"/&gt;
+
+	&lt;!-- 
+		通过 customUserDetailsService,Spring会自动的用户的访问级别.
+		也可以理解成:以后我们和数据库操作就是通过customUserDetailsService来进行关联.
+	 --&gt;
+	&lt;bean id="customUserDetailsService" class="org.liukai.tutorial.service.CustomUserDetailsService"/&gt;
+	
+&lt;/beans&gt;
+
+</pre><br /><br /><br /><br />在配置中我们可以看到三个URL对应的三个权限<br /><pre name="code" class="xml">&lt;security:intercept-url pattern="/auth/login" access="permitAll"/&gt;
+		&lt;security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/&gt;
+		&lt;security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/&gt;</pre><br /><br />需要注意的是我们使用了<a target="_blank" href="http://www.family168.com/tutorial/springsecurity3/html/el-access.html">SpringEL表达式</a>来指定角色的访问.<br />以下是表达式对应的用法.<br /><br /><div class="quote_title">引用</div><div class="quote_div">			 <br />	表达式					说明<br />hasRole([role])				返回 true 如果当前主体拥有特定角色。<br />hasAnyRole([role1,role2])		返回 true 如果当前主体拥有任何一个提供的角色 （使用逗号分隔的字符串队列）<br />principal				允许直接访问主体对象，表示当前用户<br />authentication				允许直接访问当前 Authentication对象 从SecurityContext中获得<br />permitAll				一直返回true<br />denyAll					一直返回false<br />isAnonymous()				如果用户是一个匿名登录的用户 就会返回 true<br />isRememberMe()				如果用户是通过remember-me 登录的用户 就会返回 true<br />isAuthenticated()			如果用户不是匿名用户就会返回true<br />isFullyAuthenticated()			如果用户不是通过匿名也不是通过remember-me登录的用户时， 就会返回true。<br /></div><br /><br />所以<br /><pre name="code" class="xml">&lt;security:intercept-url pattern="/auth/login" access="permitAll"/&gt;</pre><br />表示所有的人都可以访问/auth/login.<br /><br /><br /><pre name="code" class="xml">&lt;security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/&gt;
+		&lt;security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/&gt;</pre><br />则表示只有拥有对应的角色才能访问.<br /><br /><br /><br /><br /><br /><pre name="code" class="xml">		&lt;security:form-login
+				login-page="/auth/login" 
+				authentication-failure-url="/auth/login?error=true" 
+				default-target-url="/main/common"/&gt;</pre><br /><br />表示通过 /auth/login这个映射进行登录.<br />如果验证失败则返回一个URL:/auth/login?error=true<br />如果登录成功则默认指向:/main/common<br /><br /><br /><br /><pre name="code" class="xml">security:logout 
+				invalidate-session="true" 
+				logout-success-url="/auth/login" 
+				logout-url="/auth/logout"/&gt;</pre><br /><br />很简单.我们开启了session失效功能.<br />注销URL为:/auth/logout<br />注销成功后转向:/auth/login<br /><br /><br /><pre name="code" class="xml">
+
+&lt;!-- 指定一个自定义的authentication-manager :customUserDetailsService --&gt;
+	&lt;security:authentication-manager&gt;
+	        &lt;security:authentication-provider user-service-ref="customUserDetailsService"&gt;
+	        		&lt;security:password-encoder ref="passwordEncoder"/&gt;
+	        &lt;/security:authentication-provider&gt;
+	&lt;/security:authentication-manager&gt;
+	
+	&lt;!-- 对密码进行MD5编码 --&gt;
+	&lt;bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder"/&gt;
+
+	&lt;!-- 
+		通过 customUserDetailsService,Spring会自动的用户的访问级别.
+		也可以理解成:以后我们和数据库操作就是通过customUserDetailsService来进行关联.
+	 --&gt;
+	&lt;bean id="customUserDetailsService" class="org.liukai.tutorial.service.CustomUserDetailsService"/&gt;
+</pre><br /><br />一个自定义的CustomUserDetailsService,是实现SpringSecurity的UserDetailsService接口,但我们重写了他即便于我们进行数据库操作.<br /><br /><br /><br /><strong>DbUser.java</strong><br /><br /><pre name="code" class="java">
+package org.liukai.tutorial.domain;
+
+public class DbUser {
+
+	private String username;
+	private String password;
+	private Integer access;
+
+	 //getter/setter
+
+}
+
+</pre><br /><br /><br />通过一个初始化的List来模拟数据库操作.<br /><br /><strong>UserDao.java</strong><br /><br /><pre name="code" class="java">
+package org.liukai.tutorial.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.liukai.tutorial.domain.DbUser;
+
+public class UserDao {
+
+	protected static Logger logger = Logger.getLogger("dao");
+
+	public DbUser getDatabase(String username) {
+
+		List&lt;DbUser&gt; users = internalDatabase();
+
+		for (DbUser dbUser : users) {
+			if (dbUser.getUsername().equals(username) == true) {
+				logger.debug("User found");
+				return dbUser;
+			}
+		}
+		logger.error("User does not exist!");
+		throw new RuntimeException("User does not exist!");
+
+	}
+
+	/**
+	 * 初始化数据
+	 */
+	private List&lt;DbUser&gt; internalDatabase() {
+
+		List&lt;DbUser&gt; users = new ArrayList&lt;DbUser&gt;();
+		DbUser user = null;
+
+		user = new DbUser();
+		user.setUsername("admin");
+
+		// "admin"经过MD5加密后
+		user.setPassword("21232f297a57a5a743894a0e4a801fc3");
+		user.setAccess(1);
+
+		users.add(user);
+
+		user = new DbUser();
+		user.setUsername("user");
+
+		// "user"经过MD5加密后
+		user.setPassword("ee11cbb19052e40b07aac0ca060c23ee");
+		user.setAccess(2);
+
+		users.add(user);
+
+		return users;
+
+	}
+}
+
+</pre><br /><br /><br />自定义UserDetailsService .可以通过继承UserDetailsService <br />来达到灵活的自定义UserDetailsService <br /><br />关于UserDetailsService更多信息. 可以查看<a target="_blank" href="http://www.family168.com/tutorial/springsecurity3/html/technical-overview.html#d0e1564">SpringSecurity3文档</a><br /><br /><br /><strong>CustomUserDetailsService.java</strong><br /><br /><pre name="code" class="java">
+ package org.liukai.tutorial.service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.liukai.tutorial.dao.UserDao;
+import org.liukai.tutorial.domain.DbUser;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+/**
+ * 一个自定义的service用来和数据库进行操作. 即以后我们要通过数据库保存权限.则需要我们继承UserDetailsService
+ * 
+ * @author liukai
+ * 
+ */
+public class CustomUserDetailsService implements UserDetailsService {
+
+	protected static Logger logger = Logger.getLogger("service");
+
+	private UserDao userDAO = new UserDao();
+
+	public UserDetails loadUserByUsername(String username)
+			throws UsernameNotFoundException, DataAccessException {
+
+		UserDetails user = null;
+
+		try {
+
+			// 搜索数据库以匹配用户登录名.
+			// 我们可以通过dao使用JDBC来访问数据库
+			DbUser dbUser = userDAO.getDatabase(username);
+
+			// Populate the Spring User object with details from the dbUser
+			// Here we just pass the username, password, and access level
+			// getAuthorities() will translate the access level to the correct
+			// role type
+
+			user = new User(dbUser.getUsername(), dbUser.getPassword()
+					.toLowerCase(), true, true, true, true,
+					getAuthorities(dbUser.getAccess()));
+
+		} catch (Exception e) {
+			logger.error("Error in retrieving user");
+			throw new UsernameNotFoundException("Error in retrieving user");
+		}
+
+		return user;
+	}
+
+	/**
+	 * 获得访问角色权限
+	 * 
+	 * @param access
+	 * @return
+	 */
+	public Collection&lt;GrantedAuthority&gt; getAuthorities(Integer access) {
+
+		List&lt;GrantedAuthority&gt; authList = new ArrayList&lt;GrantedAuthority&gt;(2);
+
+		// 所有的用户默认拥有ROLE_USER权限
+		logger.debug("Grant ROLE_USER to this user");
+		authList.add(new GrantedAuthorityImpl("ROLE_USER"));
+
+		// 如果参数access为1.则拥有ROLE_ADMIN权限
+		if (access.compareTo(1) == 0) {
+			logger.debug("Grant ROLE_ADMIN to this user");
+			authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+		}
+
+		return authList;
+	}
+}
+
+
+</pre><br /><br />最后启动服务器输入:<br /><a target="_blank" href="http://localhost:8080/spring3-security-integration/auth/login">http://localhost:8080/spring3-security-integration/auth/login</a><br /><br /><br /><br /><span style="font-size: x-large;"><strong>总结</strong></span><br /><strong>通过本教程.我们对SpringSecurity3有了进一步的认识.<br />主要是了解了UserDetailsService的重要作用.<br />以及实现了模拟自定义数据的登录.(这点很重要,很多人学习了SpringSecurity却不知道<br />如何自定义权限)<br /><br />这次教程因为内容很多,显得比较粗糙.很多地方并没有详细的阐明.<br />后面的教程还是SpringSecurity.<br />但我们将对SpringSecurity3新推出的一些特性进行详细的说明和理解.<br /></strong><br /><br />BTW:附件为本次教程源码.你可以下载后直接在tomcat或其他web服务器启动.也可以自行添加<br />maven插件启动. <br />
+  </div>
+
+  
+  <div class="attachments">
+    
+      
+        <ul>
+          <li><a href="http://dl.iteye.com/topics/download/9623b0f6-7c1f-31f2-a9c2-162247a43283">SpringSecurity3.0.pdf</a> (1.1 MB)</li>
+          
+          <li>下载次数: 7486</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1736/1bdbc126-14db-3a48-bfb3-6eedca9c1fc7.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1736/1bdbc126-14db-3a48-bfb3-6eedca9c1fc7-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 23.5 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1738/cea111b5-ef8f-3179-a157-8818b300fd29.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1738/cea111b5-ef8f-3179-a157-8818b300fd29-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 18.4 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1742/228714e0-1212-3d70-b723-667a34ad97ba.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1742/228714e0-1212-3d70-b723-667a34ad97ba-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 4.6 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1744/0d59b3d5-9ebe-37f6-b34d-e0f7ad666847.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1744/0d59b3d5-9ebe-37f6-b34d-e0f7ad666847-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 5.8 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1746/7fc72a65-9c4e-3118-844d-7037bfbef3a0.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1746/7fc72a65-9c4e-3118-844d-7037bfbef3a0-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 4.2 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0045/1748/268fc009-b29e-3f05-afd0-d817f4a1b650.png" target="_blank"><img src='http://dl2.iteye.com/upload/attachment/0045/1748/268fc009-b29e-3f05-afd0-d817f4a1b650-thumb.png' class='magplus' title='点击查看原始大小图片' /></a></li>
+          
+          <li>大小: 8 KB</li>
+        </ul>
+      
+    
+      
+        <ul>
+          <li><a href="http://dl.iteye.com/topics/download/4bbf985e-c23d-34bc-bc76-5d96ed1a78b9">spring3-security-integration.zip</a> (25 KB)</li>
+          
+          <li>下载次数: 5029</li>
+        </ul>
+      
+    
+    
+      <ul>
+        <li><a href="#" onclick="$$('div.attachments ul').invoke('show');$(this).up(1).hide();return false;">查看图片附件</a></li>
+      </ul>
+    
+  </div>
+
+
+  
+  <ins data-revive-zoneid="171" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+  
+
+  <div id="bottoms" class="clearfix">
+    
+    <div id="share_weibo">分享到：
+      <a data-type='sina' href="javascript:;" title="分享到新浪微博"><img src="/images/sina.jpg"></a>
+      <a data-type='qq' href="javascript:;" title="分享到腾讯微博"><img src="/images/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="/blog/985407" class="next" title="git和github乱记">git和github乱记</a>
+      |
+      <a href="/blog/975423" class="pre" title="Spring3MVC和JDBC的集成">Spring3MVC和JDBC的集成</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2011-03-31 17:07</li>
+      <li>浏览 151350</li>
+      <li><a href="#comments">评论(26)</a></li>
+      
+      
+        <li><a href='/admin/link?user_favorite%5Btitle%5D=Spring+Security3+-+MVC+%E6%95%B4%E5%90%88%E6%95%99%E7%A8%8B+%28%E5%88%9D%E8%AF%86Spring+Security3%29&amp;user_favorite%5Burl%5D=http%3A%2F%2Fliukai.iteye.com%2Fblog%2F982088' target='_blank' class='favorite' onclick="$$('.favorite_form_spinner')[0].show();new Ajax.Request('/admin/link/new_xhr?user_favorite%5Btitle%5D=Spring+Security3+-+MVC+%E6%95%B4%E5%90%88%E6%95%99%E7%A8%8B+%28%E5%88%9D%E8%AF%86Spring+Security3%29&amp;user_favorite%5Burl%5D=http%3A%2F%2Fliukai.iteye.com%2Fblog%2F982088', {method: 'get', onSuccess: function(response){$(document.getElementsByTagName('body')[0]).insert({bottom:response.responseText});$$('.favorite_form_spinner')[0].hide();}});return false;">收藏</a><img alt="Spinner" class="favorite_form_spinner" src="http://www.iteye.com/images/spinner.gif?1448702469" style="vertical-align:bottom;margin-left:7px;display:none;" /></li>
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/architecture">企业架构</a></li>      
+      <li class='last'><a href="http://www.iteye.com/wiki/blog/982088" target="_blank" class="more">相关推荐</a></li>
+    </ul>    
+  </div>
+  
+		    
+		
+<div class="boutique-curr-box blog_comment">
+	  <div class="boutique-curr clearfix">
+	    <h5 class="h3titles">参考知识库</h5>
+	    
+	    <dl class="dlnewlist">
+	    
+          <dd><a target="_blank" href="http://lib.csdn.net/base/liveplay"><img src="http://img.knowledge.csdn.net/upload/base/1472614759773_773.jpg" width="58" height="58" alt=""></a></dd>
+          <dt>
+              <a target="_blank" href="http://lib.csdn.net/base/liveplay" classs="title">直播技术知识库</a>
+              <span>
+                 <em>591</em>&nbsp;&nbsp;关注 <i>|</i> <em>620</em>&nbsp;&nbsp;收录                  
+              </span>
+          </dt>
+      
+	    </dl>
+	    
+	    <dl class="dlnewlist">
+	    
+          <dd><a target="_blank" href="http://lib.csdn.net/base/agile"><img src="http://img.knowledge.csdn.net/upload/base/1471918993092_92.jpg" width="58" height="58" alt=""></a></dd>
+          <dt>
+              <a target="_blank" href="http://lib.csdn.net/base/agile" classs="title">敏捷知识库</a>
+              <span>
+                 <em>568</em>&nbsp;&nbsp;关注 <i>|</i> <em>104</em>&nbsp;&nbsp;收录                  
+              </span>
+          </dt>
+      
+	    </dl>
+	    
+	    <dl class="dlnewlist">
+	    
+          <dd><a target="_blank" href="http://lib.csdn.net/base/go"><img src="http://img.knowledge.csdn.net/upload/base/1471395508721_721.jpg" width="58" height="58" alt=""></a></dd>
+          <dt>
+              <a target="_blank" href="http://lib.csdn.net/base/go" classs="title">Go知识库</a>
+              <span>
+                 <em>370</em>&nbsp;&nbsp;关注 <i>|</i> <em>632</em>&nbsp;&nbsp;收录                  
+              </span>
+          </dt>
+      
+	    </dl>
+	    
+	    <dl class="dlnewlist">
+	    
+          <dd><a target="_blank" href="http://lib.csdn.net/base/machinelearning"><img src="http://img.knowledge.csdn.net/upload/base/1452498104247_247.jpg" width="58" height="58" alt=""></a></dd>
+          <dt>
+              <a target="_blank" href="http://lib.csdn.net/base/machinelearning" classs="title">机器学习知识库</a>
+              <span>
+                 <em>8397</em>&nbsp;&nbsp;关注 <i>|</i> <em>1619</em>&nbsp;&nbsp;收录                  
+              </span>
+          </dt>
+      
+	    </dl>
+	    
+	  </div>
+</div>
+ 		
+      
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    <div id="bc2391134">
+  <div class="comment_title">
+    26 楼
+    <a href='http://1093619789.iteye.com' target='_blank' title='纵观全局'>纵观全局</a>
+    2016-07-08&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2391134);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">666666666666666 Mark !</div>
+</div>
+
+<div id="bc2390707">
+  <div class="comment_title">
+    25 楼
+    <a href='http://hiderevenger.iteye.com' target='_blank' title='Hiderevenger'>Hiderevenger</a>
+    2016-06-23&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2390707);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><img src="/images/smiles/icon_idea.gif" /> ,教程很好,循序渐进,融会贯通</div>
+</div>
+
+<div id="bc2374923">
+  <div class="comment_title">
+    24 楼
+    <a href='http://allinnature.iteye.com' target='_blank' title='AllInNature'>AllInNature</a>
+    2015-07-14&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2374923);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">Caused by: java.lang.NoClassDefFoundError: javax/servlet/ServletContainerInitializer为什么出现这个错误，tomcat启动不了</div>
+</div>
+
+<div id="bc2374315">
+  <div class="comment_title">
+    23 楼
+    <a href='http://guangzhoujava.iteye.com' target='_blank' title='2013努力实现'>2013努力实现</a>
+    2015-07-01&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2374315);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><div class="quote_title">引用</div><div class="quote_div"><u><em><strong><img src="/images/smiles/icon_lol.gif" />&nbsp;<img src="/images/smiles/icon_surprised.gif" />&nbsp;<img src="/images/smiles/icon_surprised.gif" />&nbsp;<img src="/images/smiles/icon_surprised.gif" />&nbsp;<img src="/images/smiles/icon_surprised.gif" /> [i]</em></strong>[/i]</u></div></div>
+</div>
+
+<div id="bc2371455">
+  <div class="comment_title">
+    22 楼
+    <a href='http://2047699523.iteye.com' target='_blank' title='2047699523'>2047699523</a>
+    2015-05-04&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2371455);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">Spring Security 3.x完整入门配置教程及其代码下载 <a rel="nofollow" target="_blank" href="http://www.zuidaima.com/share/1751865719933952.htm">http://www.zuidaima.com/share/1751865719933952.htm</a></div>
+</div>
+
+<div id="bc2370316">
+  <div class="comment_title">
+    21 楼
+    <a href='http://mashiro.iteye.com' target='_blank' title='Mashiro'>Mashiro</a>
+    2015-04-15&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2370316);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">感谢分享.......</div>
+</div>
+
+<div id="bc2366059">
+  <div class="comment_title">
+    20 楼
+    <a href='http://huanjianmeng.iteye.com' target='_blank' title='huanjianmeng'>huanjianmeng</a>
+    2015-01-10&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2366059);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">You cannot use a spring-security-2.0.xsd or spring-security-3.0.xsd or spring-security-3.1.xsd schema with Spring Security 3.2. Please update your schema declarations to the 3.2 schema.</div>
+</div>
+
+<div id="bc2365604">
+  <div class="comment_title">
+    19 楼
+    <a href='http://787305788-qq-com.iteye.com' target='_blank' title='加班伤不起'>加班伤不起</a>
+    2015-01-03&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2365604);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">感谢分享，介绍的很直观<img src="/images/smiles/icon_biggrin.gif" /> </div>
+</div>
+
+<div id="bc2365258">
+  <div class="comment_title">
+    18 楼
+    <a href='http://spoonypussy.iteye.com' target='_blank' title='spoonypussy'>spoonypussy</a>
+    2014-12-25&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2365258);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">15楼和16楼问题，可能是引入的spring-security jar包的版本与spring-security配置文件中引入的命名空间的xsd文件的版本不一致引起的。<br /><br />我自己依赖的是3.2.5版本的jar包，但命名空间空xsd文件的版本为3.0，把<br />http://www.springframework.org/schema/security/<span style="color: blue;">[color=red]spring-security-3.0.xsd</span>[/color]<br />改为<br />http://www.springframework.org/schema/security/<span style="color: red;">spring-security-3.2.xsd</span><br />就好了。</div>
+</div>
+
+<div id="bc2363609">
+  <div class="comment_title">
+    17 楼
+    <a href='http://1063191427.iteye.com' target='_blank' title='小旋风vs'>小旋风vs</a>
+    2014-11-24&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2363609);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">好人呀。。。555555555555555555555555</div>
+</div>
+
+<div id="bc2356258">
+  <div class="comment_title">
+    16 楼
+    <a href='http://xiexie2008.iteye.com' target='_blank' title='xiexie2008'>xiexie2008</a>
+    2014-08-14&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2356258);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><div class="quote_title">CDS_CC 写道</div><div class="quote_div">org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: spring-security-web classes are not available. You need these to use &lt;filter-chain-map&gt;<br />Offending resource: ServletContext resource [/WEB-INF/spring-security.xml]<br /><br /><br />这是什么错误，jar 包我都加了</div><br /><br /><br />遇到同样的错误，怎么解决的?<br /></div>
+</div>
+
+<div id="bc2337513">
+  <div class="comment_title">
+    15 楼
+    <a href='http://cds-cc.iteye.com' target='_blank' title='CDS_CC'>CDS_CC</a>
+    2014-01-13&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2337513);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: spring-security-web classes are not available. You need these to use &lt;filter-chain-map&gt;<br />Offending resource: ServletContext resource [/WEB-INF/spring-security.xml]<br /><br /><br />这是什么错误，jar 包我都加了</div>
+</div>
+
+<div id="bc2335815">
+  <div class="comment_title">
+    14 楼
+    <a href='http://xiaoquan35.iteye.com' target='_blank' title='xiaoquan35'>xiaoquan35</a>
+    2013-12-28&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2335815);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">很好的帖子，给我的帮助很大，看了很多篇，感觉还是这篇言简意赅，一学就会</div>
+</div>
+
+<div id="bc2321826">
+  <div class="comment_title">
+    13 楼
+    <a href='http://liukai.iteye.com' target='_blank' title='liukai'>liukai</a>
+    2013-08-09&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2321826);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><div class="quote_title">ly123938248 写道</div><div class="quote_div">http://liukai.iteye.com/admin/blogs/972914<br />http://liukai.iteye.com/admin/blogs/973120<br />这两个网页进不去，没有权限哦。</div><br />http://liukai.iteye.com/blog/972914<br />http://liukai.iteye.com/blog/973120</div>
+</div>
+
+<div id="bc2321641">
+  <div class="comment_title">
+    12 楼
+    <a href='http://ly123938248.iteye.com' target='_blank' title='ly123938248'>ly123938248</a>
+    2013-08-08&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2321641);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">http://liukai.iteye.com/admin/blogs/972914<br />http://liukai.iteye.com/admin/blogs/973120<br />这两个网页进不去，没有权限哦。</div>
+</div>
+
+<div id="bc2321084">
+  <div class="comment_title">
+    11 楼
+    <a href='http://liukai.iteye.com' target='_blank' title='liukai'>liukai</a>
+    2013-08-02&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2321084);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><div class="quote_title">bewithme 写道</div><div class="quote_div">请问，如何实现权限和资源的完全数据库配置，而不需要在xml中配如下<br />&nbsp;&nbsp;&nbsp; &lt;security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/&gt;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/&gt;&nbsp; </div><br />的确是可以的.但是比较麻烦.可以去我的github看cmop项目.<br />没有用spring security3&nbsp; ,太麻烦了<br />用的是shiro&nbsp; </div>
+</div>
+
+<div id="bc2321022">
+  <div class="comment_title">
+    10 楼
+    <a href='http://bewithme.iteye.com' target='_blank' title='bewithme'>bewithme</a>
+    2013-08-02&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2321022);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">请问，如何实现权限和资源的完全数据库配置，而不需要在xml中配如下<br />&nbsp;&nbsp;&nbsp; &lt;security:intercept-url pattern="/main/admin" access="hasRole('ROLE_ADMIN')"/&gt;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security:intercept-url pattern="/main/common" access="hasRole('ROLE_USER')"/&gt;&nbsp; </div>
+</div>
+
+<div id="bc2317152">
+  <div class="comment_title">
+    9 楼
+    <a href='http://xly1981.iteye.com' target='_blank' title='xly1981'>xly1981</a>
+    2013-07-02&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2317152);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">简单尝试就成功了，的确是细心之作</div>
+</div>
+
+<div id="bc2314770">
+  <div class="comment_title">
+    8 楼
+    <a href='http://quinnhe.iteye.com' target='_blank' title='hekuilove'>hekuilove</a>
+    2013-06-09&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2314770);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content"><pre name="code" class="java">
+if (dbUser.getUsername().equals(username) == true) {  
+                logger.debug("User found");  
+                return dbUser;  
+            } 
+</pre><br /><br />大亮<img src="/images/smiles/icon_redface.gif" />&nbsp;<img src="/images/smiles/icon_redface.gif" /> </div>
+</div>
+
+<div id="bc2311736">
+  <div class="comment_title">
+    7 楼
+    <a href='http://shiweiwei.iteye.com' target='_blank' title='shiweiwei'>shiweiwei</a>
+    2013-05-17&nbsp;&nbsp;
+    <a href="#" onclick="quote_comment(2311736);return false;">引用</a>
+    
+  </div>
+  <div class="comment_content">好东东，正在学习！</div>
+</div>
+
+
+    
+    <div class="pagination"><span class="disabled prev_page">&laquo; 上一页</span> <span class="current">1</span> <a href="/blog/982088?page=2#comments" rel="next">2</a> <a href="/blog/982088?page=2#comments" class="next_page" rel="next">下一页 &raquo;</a></div>
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <form action="/blog/982088" id="comment_form" method="post" onsubmit="return false;"><div style="margin:0;padding:0;display:inline"><input name="authenticity_token" type="hidden" value="wp3+CEbb9Jqcwmuyidbd2OHBbwGvffdsKAcpcKtBmYw=" /></div>          
+
+
+  <input type="hidden" id="editor_bbcode_flag"/>
+
+
+
+<div id="editor_main"><textarea class="validate-richeditor bad-words min-length-5" cols="40" id="editor_body" name="comment[body]" rows="20" style="width: 500px; height: 350px;"></textarea></div>
+
+
+<script type="text/javascript">
+  var editor = new Control.TextArea.Editor("editor_body", "bbcode", false);
+</script>
+
+          <p style="text-align:right;margin-right:30px;">(快捷键 Alt+S / Ctrl+Enter) <input class="submit" id="quick_reply_button" name="commit" type="submit" value="提交" /></p>
+       </form>
+        <script type="text/javascript">
+          new HotKey("s",function() {$('quick_reply_button').click();},{altKey: true, ctrlKey: false});
+          new HotKey(new Number(13),function() {$('quick_reply_button').click();},{altKey: false, ctrlKey: true});
+
+          new Validation("comment_form", {immediate: false, onFormValidate: function(result, form){
+            if(result) {
+              new Ajax.Request('/blog/create_comment/982088', {
+                onFailure:function(response){
+                  $('comments').insert({after:response.responseText})
+                  form.spinner.hide();
+                  Element.scrollTo($('comments'));
+                },
+                onSuccess:function(response){
+                  Element.scrollTo($('comments'));
+                  var new_comment = new Element('div', {}).update(response.responseText).firstChild;
+                  var comment_id = new_comment.readAttribute('id');
+
+                  $('comments').insert({after:response.responseText});
+                  $('editor_body').value = "";
+
+                  var css_rules = '#' + comment_id + ' pre';
+                  highlightNewAddContent(css_rules);
+                  processComment();
+                  code_favorites_init(css_rules);
+                  
+                  form.spinner.hide();
+                }, parameters:Form.serialize(form)
+              });
+            }
+        }});
+        </script>
+        </div>
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 982088;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', 'Spring Security3 - MVC 整合教程 (初识Spring Security3)');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'Spring Security3 - MVC 整合教程 (初识Spring Security3)');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href='http://liukai.iteye.com'><img alt="liukai的博客" class="logo" src="http://www.iteye.com/upload/logo/user/125428/fa2a312f-cca7-3abb-b6a7-fee3864f2f33.jpg?1247652421" title="liukai的博客: 郁闷的战士" width="" /></a></div>
+  <div id="blog_owner_name">liukai</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 498457 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="http://www.iteye.com/images/icon_minigender_1.gif?1448702469" title="男" /></li>
+              <li>来自: 成都</li>
+              <li><img src='/images/status/offline.gif'/></li>
+              
+                <li>
+                  <a href="http://my.iteye.com/messages/new?message%5Breceiver_name%5D=liukai" class="message" title="发送站内短信">发短消息</a>
+                  
+                    <a href="http://my.iteye.com/feed?subscription%5Bsubscribed_user_name%5D=liukai" class="subscription" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', 'wp3+CEbb9Jqcwmuyidbd2OHBbwGvffdsKAcpcKtBmYw='); f.appendChild(s);f.submit();return false;">关注</a>
+                  
+                </li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style='font-weight:normal;font-size:12px;padding-left:30px;'><a href="/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://anhongyang125.iteye.com' target='_blank'><img alt="anhongyang125的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1448702469" title="anhongyang125的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://anhongyang125.iteye.com' target='_blank' title='anhongyang125'>anhongyang125</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://245419099.iteye.com' target='_blank'><img alt="小牙我姓曹的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1448702469" title="小牙我姓曹的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://245419099.iteye.com' target='_blank' title='小牙我姓曹'>小牙我姓曹</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://kenstob.iteye.com' target='_blank'><img alt="kenstob的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1448702469" title="kenstob的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://kenstob.iteye.com' target='_blank' title='kenstob'>kenstob</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://yongchun-bj.iteye.com' target='_blank'><img alt="小五2015的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1448702469" title="小五2015的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://yongchun-bj.iteye.com' target='_blank' title='小五2015'>小五2015</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="/">全部博客 (82)</a></li>
+                
+                  <li><a href="/category/62423">数据库 (7)</a></li>
+                
+                  <li><a href="/category/64352">javascript (6)</a></li>
+                
+                  <li><a href="/category/73747">java (15)</a></li>
+                
+                  <li><a href="/category/73002">ajax (1)</a></li>
+                
+                  <li><a href="/category/62422">spring (3)</a></li>
+                
+                  <li><a href="/category/64504">ie/firefox (3)</a></li>
+                
+                  <li><a href="/category/130971">ubuntu (8)</a></li>
+                
+                  <li><a href="/category/131381">项目管理 (8)</a></li>
+                
+                  <li><a href="/category/132684">jquery (2)</a></li>
+                
+                  <li><a href="/category/134346">commons-lang3 (9)</a></li>
+                
+                  <li><a href="/category/140288">springsecurity (2)</a></li>
+                
+                  <li><a href="/category/149025">spring3MVC教程 (8)</a></li>
+                
+                  <li><a href="/category/150830">git (1)</a></li>
+                
+                  <li><a href="/category/150831">rails (0)</a></li>
+                
+                  <li><a href="/category/150832">ruby (0)</a></li>
+                
+                  <li><a href="/category/270675">1 (0)</a></li>
+                
+              </ul>
+            </div>
+            <div id='month_blogs'>
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="/blog/news">我的资讯</a> (1)</li>
+                <li>
+                  <a href="/blog/post">我的论坛</a> (194)
+                </li>
+                <li><a href="/blog/answered_problems">我的问答</a> (223)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="/blog/monthblog/2014-05">2014-05</a> (1)</li>
+                
+                  <li><a href="/blog/monthblog/2014-03">2014-03</a> (1)</li>
+                
+                  <li><a href="/blog/monthblog/2013-09">2013-09</a> (1)</li>
+                
+                <li><a href="/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href='http://1093619789.iteye.com' target='_blank' title='纵观全局'>纵观全局</a>： 
+                  666666666666666 Mark !<br />
+                  <a href="/blog/982088#bc2391134">Spring Security3 - MVC 整合教程 (初识Spring Security3)</a>
+                </li>
+                
+                <li>
+                  <a href='http://hiderevenger.iteye.com' target='_blank' title='Hiderevenger'>Hiderevenger</a>： 
+                   ,教程很好,循序渐进,融会贯通<br />
+                  <a href="/blog/982088#bc2390707">Spring Security3 - MVC 整合教程 (初识Spring Security3)</a>
+                </li>
+                
+                <li>
+                  <a href='http://smileyangtest.iteye.com' target='_blank' title='smileyangtest'>smileyangtest</a>： 
+                  按了add怎么什么反映都没有,也没有报错什么的,什么都没有,请 ...<br />
+                  <a href="/blog/975103#bc2390503">Spring3MVC和jQuery的集成</a>
+                </li>
+                
+                <li>
+                  <a href='http://Nabulio.iteye.com' target='_blank' title='Nabulio'>Nabulio</a>： 
+                  写的不怎么详细<br />
+                  <a href="/blog/973120#bc2388162">maven项目添加jar包.</a>
+                </li>
+                
+                <li>
+                  <a href='http://ddnzero.iteye.com' target='_blank' title='ddnzero'>ddnzero</a>： 
+                  楼主 数据库表的脚本有没？？？  初始是有数据的吗？？？<br />
+                  <a href="/blog/1021643#bc2384169">Spring3MVC实现Springside3 mini-web(有码)</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+        <div style="margin-top: 10px;float: left;clear: left;">
+					<ins data-revive-zoneid="185" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+				</div>
+      </div>    
+
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr/>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br />
+          &copy; 2003-2016 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+        <ins data-revive-zoneid="186" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57"></ins>
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=810258' width='0' height='0' />");
+</script>
+
+<script src="http://csdnimg.cn/pubfooter/js/tracking.js?version=20130923164150" type="text/javascript"></script>
+
+    
+    
+    <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>
+<script src="http://c.csdnimg.cn/public/common/libs/jquery/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">var $csdn_iteye_jq = jQuery.noConflict();// 解决jq与prototype.js命名空间冲突的问题</script>
+<script src="http://ads.csdn.net/js/tracking.js" type="text/javascript"></script>
+    
+	    
+	    <script src="http://www.iteye.com/javascripts/web-storage-cache.min.js?1461122561" type="text/javascript"></script>
+	    <script src="http://www.iteye.com/javascripts/replace.min.js?1464163001" type="text/javascript"></script>
+    
+    
+  </body>
+</html>
